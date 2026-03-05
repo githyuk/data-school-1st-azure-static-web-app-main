@@ -31,7 +31,7 @@ jobs:
           ###### Repository/Build Configurations ######
           app_location: "/" 
           api_location: "api" 
-          output_location: "" # 👈 빈칸으로 두면 로봇이 알아서 결과물을 찾아냅니다!
+          output_location: "out" # 👈 빈칸으로 두면 로봇이 알아서 결과물을 찾아냅니다!
           ###### End of Repository/Build Configurations ######
           ###### End of Repository/Build Configurations ######
 
@@ -46,3 +46,4 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_AMBITIOUS_GLACIER_058088000 }}
           action: "close"
+
