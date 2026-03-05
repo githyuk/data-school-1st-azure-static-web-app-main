@@ -8,8 +8,8 @@ app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 DB_CONFIG = {
     "host": "team4-db.postgres.database.azure.com",
     "database": "postgres",
-    "user": "여기에_아이디_입력",
-    "password": "여기에_비밀번호_입력",
+    "user": "azure_root",
+    "password": "qwer1234!",
     "port": 5432
 }
 
