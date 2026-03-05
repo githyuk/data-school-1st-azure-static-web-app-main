@@ -1,21 +1,22 @@
 import azure.functions as func
 import json
-import pg8000.native # 초경량 DB 라이브러리
+import pg8000.dbapi # 애저가 좋아하는 가벼운 DB 라이브러리
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
 # ==========================================
-# 🛑 여기에 팀장님의 실제 DB 정보를 넣어주세요!
+# 🛑 스크린샷에서 유추한 팀장님의 DB 정보입니다!
+# DB_USER와 DB_PASSWORD만 정확히 채워주세요.
 # ==========================================
-DB_HOST = "team4-db.postgres.database.azure.com"       # 예: my-postgres.postgres.database.azure.com
-DB_NAME = "postgres"       # 예: postgres
-DB_USER = "azure_root"     # 예: adminuser
-DB_PASSWORD = "qwer1234!"  
+DB_HOST = "team4-db.postgres.database.azure.com"
+DB_NAME = "postgres"
+DB_USER = "azure_root"     # 예: team4admin
+DB_PASSWORD = "qwer1234!"
 # ==========================================
 
 # DB 연결 함수
 def get_db_connection():
-    return pg8000.native.Connection(
+    return pg8000.dbapi.connect(
         user=DB_USER,
         password=DB_PASSWORD,
         host=DB_HOST,
@@ -23,26 +24,28 @@ def get_db_connection():
         port=5432
     )
 
-# [기능 1] 로그인 기능: 유저 정보 테이블과 대조
+# [기능 1] 로그인: users 테이블과 대조!
 @app.route(route="login", methods=["POST"])
 def login(req: func.HttpRequest) -> func.HttpResponse:
     try:
-        # 프론트엔드에서 보낸 아이디와 비밀번호 받기
         req_body = req.get_json()
         userid = req_body.get('userid')
         password = req_body.get('password')
 
-        # DB 연결 및 대조
-        con = get_db_connection()
-        # 프론트엔드 코드 보니까 이름 변수가 'name'이네요!
-        # 테이블 이름이 'users'라고 가정했습니다. (다르면 수정해주세요)
-        query = "SELECT name FROM users WHERE userid = :id AND password = :pw"
-        result = con.run(query, id=userid, pw=password)
-        con.close()
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # 쿼리문: userid와 password가 일치하면 name을 가져옵니다.
+        query = "SELECT name FROM users WHERE userid = %s AND password = %s"
+        cursor.execute(query, (userid, password))
+        result = cursor.fetchone()
+        
+        cursor.close()
+        conn.close()
 
-        # DB에 유저가 존재하면 (결과가 있으면)
+        # DB에 유저가 존재하면
         if result:
-            user_name = result[0][0] # 첫 번째 줄, 첫 번째 칸(name)
+            user_name = result[0] # DB에서 가져온 진짜 이름!
             return func.HttpResponse(
                 body=json.dumps({"username": user_name}),
                 mimetype="application/json",
@@ -62,7 +65,7 @@ def login(req: func.HttpRequest) -> func.HttpResponse:
             status_code=500
         )
 
-# [기능 2] 쉼터 데이터 뿌려주기 (지도로 넘어간 뒤 실행됨)
+# [기능 2] 쉼터 데이터 뿌려주기
 @app.route(route="shelters", methods=["GET"])
 def get_shelters(req: func.HttpRequest) -> func.HttpResponse:
     shelters_data = [
