@@ -1,0 +1,26 @@
+// components/MapComponent.tsx
+
+import React from 'react';
+
+// Pro 버전: Type safety를 위한 props 인터페이스 정의 (지금은 비어있음)
+interface MapComponentProps {}
+
+const MapComponent: React.FC<MapComponentProps> = () => {
+  return (
+    <div className="w-full h-full flex flex-col items-center justify-center bg-gray-100 rounded-xl shadow-inner border-2 border-dashed border-gray-300 p-8 text-center">
+      {/* 📍 지도를 상징하는 깔끔한 아이콘과 문구 */}
+      <div className="bg-white p-4 rounded-full shadow-md mb-6 border border-gray-200">
+        <span className="text-5xl">📍</span>
+      </div>
+      <h3 className="text-xl font-bold text-gray-800 mb-2">
+        여기에 지도가 표시됩니다
+      </div>
+      <p className="text-gray-600 leading-relaxed max-w-sm">
+        현재 게스트 모드입니다.<br />
+        로그인하시면 실시간 대피소 정보를 확인하실 수 있습니다.
+      </p>
+    </div>
+  );
+};
+
+export default MapComponent;
