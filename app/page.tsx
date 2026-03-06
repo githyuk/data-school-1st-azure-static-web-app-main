@@ -1,11 +1,16 @@
+// app/page.tsx
+
 'use client';
 
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 
+// 🏆 Pro 버전: 경로 Alias (@/) 적용하여 안정성 확보
 // 카카오 지도를 불러오기 위한 dynamic import (SSR 방지)
-const MapComponent = dynamic(() => import('../components/MapComponent'), {
+const MapComponent = dynamic(() => import('@/components/MapComponent'), {
   ssr: false,
+  // 로딩 중에 보여줄 Pro placeholder
+  loading: () => <div className="w-full h-[400px] bg-gray-100 animate-pulse rounded-xl flex items-center justify-center text-gray-400">지도 로딩 중...</div>
 });
 
 export default function Home() {
@@ -192,7 +197,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: '#4B5563',
   },
   mapWrapper: {
-    height: '400px',
+    height: '400px', // 지도 영역 확보
     backgroundColor: 'white',
     borderRadius: '16px',
     overflow: 'hidden',
@@ -210,7 +215,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: '14px',
     fontWeight: 'bold',
     cursor: 'pointer',
-    zIndex: 10,
+    zIndex: 10, // 지도 위에 표시
   },
   footer: {
     display: 'flex',
