@@ -1,14 +1,12 @@
+// next.config.ts
+
 import type { NextConfig } from "next";
 
-// ⚠️ 핵심: ': NextConfig' 대신 ': any'를 써서 타입 검사를 강제로 끕니다.
-const nextConfig: any = {
-  output: 'export',  // Azure 배포를 위한 핵심 설정
-  eslint: {
-    ignoreDuringBuilds: true, // 에러 무시 설정
-  },
-  images: {
-    unoptimized: true, // 이미지 최적화 끄기
-  },
+const nextConfig: NextConfig = {
+  // Pro 버전: 정적 내보내기 활성화 (Azure Static Web Apps 최적화)
+  output: 'export',
+  // Pro 버전: 빌드 속도를 위해 ESLint 경고 무시 (필요시 활성화 가능)
+  // eslint: { ignoreDuringBuilds: true }, // 이 부분 지우기!
 };
 
 export default nextConfig;
